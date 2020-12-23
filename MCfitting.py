@@ -2,19 +2,22 @@ import math
 import random 
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
+import numpy as np
 
 def linear(a, b, x): #Define the Target function
    return a*x+b
-yexp=[[-5.0,-6.1,0.3], #The fake data (x,y,sigma)
-      [-4.0,-3.7,0.2],
-      [-3.0,-2.2,0.15],
-      [-2.0,-0.1,0.15],
-      [-1.0, 2.1,0.15],
-      [0.0,4.1,0.15],
-      [1.0,6.3,0.15],
-      [2.0,7.9,0.18],
-      [3.0,10.0,0.2],
-      [4.0,11.6,0.3]]
+yexp=[[-5.0,-6.6,0.7], #The fake data (x,y,sigma)
+      [-4.0,-3.5,0.6],
+      [-3.0,-2.5,0.5],
+      [-2.0,-0.1,0.5],
+      [-1.0, 2.1,0.5],
+      [0.0,4.1,0.5],
+      [1.0,6.3,0.4],
+      [2.0,7.9,0.4],
+      [3.0,10.0,0.4],
+      [4.0,11.6,0.4]]
+y=(np.array(yexp)).transpose()
+
 #------------ Set for figure export----------
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
@@ -55,5 +58,10 @@ ax.scatter(x1, x2, x3, c='g', marker='o',s=0.05)
 plt.show()
 plt.savefig('image%d'%(j))
 
-print'Bestfit: y=',abest,'x+',bbest
-print'Xi square =',xibest 
+print('Bestfit: y=',abest,'x+',bbest)
+print('Xi square =',xibest)
+s=("Data points and fitting result")
+plt.title(s)
+plt.errorbar(y[0],y[1],yerr=y[2],fmt='o')
+plt.plot(y[0], y[0]*abest + bbest)
+plt.show()
