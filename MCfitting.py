@@ -3,9 +3,19 @@ import random
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import numpy as np
+import sys
 
 def linear(a, b, x): #Define the Target function
    return a*x+b
+
+def xisquare_f(input,data,sigma): #xisquare=(yth-yexp)^2/s^2
+    return (input-data)**2.0/sigma**2.0
+
+def likelihood_f(input,data,sigma):
+    #gaussian likelihood function
+    #f(x,s)=(2pi*s^2)^-0.5*exp(-xisquare^2/2)
+    return math.exp(-((input-data)**2.0/sigma**2.0)/2.0)/(2.0*math.pi*(yexp[j][2])**2.0)**0.5
+
 yexp=[[-5.0,-6.6,0.7], #The fake data (x,y,sigma)
       [-4.0,-3.5,0.6],
       [-3.0,-2.5,0.5],
@@ -29,7 +39,7 @@ ax.set_ylabel('coefficient b')
 ax.set_zlabel('Likelihood')
 #------------ Set for figure export----------
 result=[]
-xibest=100000000.0 # Given a large initial xisquare
+xibest=sys.float_info.max # Given a large initial xisquare
 for i in range(0,40000):# The number of the sample points
     xitotal=0.0 # initial total xisquare
     liketotal=1.0 # initial total likelohood
@@ -37,10 +47,8 @@ for i in range(0,40000):# The number of the sample points
     b=random.uniform(3.75,4.25)
     for j in range(0,10):
         yth=linear(a,b,yexp[j][0])
-        #xisquare=(yth-yexp)^2/s^2
-        xisquare=(yth-yexp[j][1])**2.0/(yexp[j][2])**2.0
-        #gaussian likelihood function f(x,s)=(2pi*s^2)^-0.5*exp(-x^2/2)
-        likelihood= math.exp(-xisquare/2.0)/(2.0*math.pi*(yexp[j][2])**2.0)**0.5
+        xisquare=xisquare_f(yth,yexp[j][1],yexp[j][2])
+        likelihood=likelihood_f(yth,yexp[j][1],yexp[j][2])
         xitotal= xitotal+xisquare #(Sum(xisquare))
         liketotal=liketotal*likelihood #(likelihood*likelihood*...))
     result.append([a,b,xitotal,liketotal])#save the result
